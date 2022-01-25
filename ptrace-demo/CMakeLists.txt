@@ -10,9 +10,9 @@ include_directories(
 )
 
 add_executable(vul-exe 
-    "${PROJECT_SOURCE_DIR}/main.cc"
+    "${PROJECT_SOURCE_DIR}/main.c"
 )
 
 add_executable(ptrace-exe 
-    "${PROJECT_SOURCE_DIR}/ptrace-hook.cc"
+    "${PROJECT_SOURCE_DIR}/ptrace-hook.c"
 )

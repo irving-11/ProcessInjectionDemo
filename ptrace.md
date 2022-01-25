@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
 ```
 
 ```shell
-$ ./victim                           		│$ sudo ./test_4 9071
+$ ./victim                                  │$ sudo ./test_4 9071
 Hello, ptrace! [pid:9071]                   │the process stopped, putting back the original instructions.press Enter to
 Hello, ptrace! [pid:9071]                   │ continue ptraced process.
 Hello, ptrace! [pid:9071]                   │              
