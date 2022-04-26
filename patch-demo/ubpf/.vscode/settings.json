@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "random": "c"
+    },
+    "python.formatting.provider": "black"
+}
