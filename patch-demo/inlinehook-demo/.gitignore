@@ -6,3 +6,4 @@ CMakeFiles/
 *.so
 hooker-test
 Makefile
+.vscode/
