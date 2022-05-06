@@ -64,6 +64,33 @@ int fix_func(Mem2 mem2){
 	return run_ebpf(mem2);
 }
 
+int sum(int a, int b)
+{
+    /*int ret;
+    asm volatile (
+        "mov %1, %0\n\t"
+        "add %2, %0\n\t"
+        : "=&r"(ret)
+        : "r"(a), "r"(b)
+    );*/
+    // 这样写会报a，b声明但未使用的错误
+    asm("addl %edi, %esi\n\t");
+    asm("movl %esi, %eax\n\t");
+    //return ret;
+}
+
+int patch_handler() {
+    asm("movl $1, %esi\n\t");
+    asm("movl $2, %edi\n\t");
+    asm("call sum\n\t");
+}
+
+// __attribute__((naked)) 
+/*int patch_handler(Mem2 mem2) {
+    asm("movl 12(%rbp), %eax\n\t");
+    // asm("movl $2, %eax\n\t");//for test
+}*/
+
 int run_ebpf(Mem2 mem2)
 {
     //这样传参只能说明ebpf patch是有效的？??

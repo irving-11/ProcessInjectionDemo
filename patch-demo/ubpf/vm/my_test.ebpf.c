@@ -48,14 +48,8 @@ struct Mem2
 uint64_t fix_func(void *mem)
 {
     struct Mem2 *bpf = (struct Mem2 *)mem;
-    int a = bpf->d.a;
-    char c[16];
-    strcpy(c, bpf->d.b);
-    // int b = bpf->b;
-    //Mem bpf = (Mem)mem;
-    //int a = bpf.a;
     
-    if (a > 5000 && strcmp((const char *)c, "goooood") == 0)
+    if (bpf->d.a > 2000 && bpf->d.b[0]=='g' && bpf->d.b[1]=='o' && bpf->d.b[2]=='o')
     {
         return 10;
     }
