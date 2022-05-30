@@ -1,3 +1,9 @@
+/*
+note: "An inconsistent bits-per-sample value may trigger an assertion violation while converting a crafted AVI file to MPEG4, leading to a denial of service."
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE_2018_12459
+commit link: https://github.com/FFmpeg/FFmpeg/commit/2fc108f60f98cd00813418a8754a46476b404a3c
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -35,6 +41,12 @@ int main() {
     avctx = (struct AVCodecContext *)malloc(sizeof(struct AVCodecContext));
     avctx->bits_per_raw_sample = 1;
     m.studio_profile = 0;
+    // OR
+    // avctx->bits_per_raw_sample = 8;
+    // m.studio_profile = 0;
+    // OR
+    // avctx->bits_per_raw_sample = 1;
+    // m.studio_profile = 1;
     m.avctx = avctx;
     ctx->m = m;
 

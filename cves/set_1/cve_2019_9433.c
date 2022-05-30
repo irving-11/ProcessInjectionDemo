@@ -1,3 +1,9 @@
+/*
+note: "possible information disclosure due to improper input validation."
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE_2019_9433
+commit link: https://github.com/webmproject/libvpx/commit/52add5896661d186dec284ed646a4b33b607d2c7
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,10 +46,11 @@ typedef struct VP8Common {
 
 void dummy_cve_2019_9433_vp8_deblock(VP8_COMMON *cm, int *source, int *post, int q, int low_var_thresh, int flag) {
     const MODE_INFO *mode_info_context = cm->show_frame_mi;
-    int i = mode_info_context->bmi[0].mv.as_int;
-    printf("i: %d\n", i);
+    // patch
     // const MODE_INFO *mode_info_context = cm->mi;
-    //source = &i;// mode_info_context->bmi[0].mv.as_int;
+    int i = mode_info_context->bmi[0].mv.as_int;
+    // printf("i: %d\n", i);
+    
     *source = i;
     source = &i;
 }

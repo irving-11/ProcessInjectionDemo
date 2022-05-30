@@ -1,3 +1,9 @@
+/*
+note: "Fixes use of freed memory." BY adding memset().
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-3417
+commit link: https://github.com/FFmpeg/FFmpeg/commit/e8714f6f93d1a32f4e4655209960afcf4c185214
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +30,7 @@ void dummy_cve_2015_3417_ff_h264_free_tables(H264Context *h, int free_rbsp) {
         for (i = 0; i < 36; i++)
             // ff_h264_unref_picture(h, &h->DPB[i]);
             printf("1");
+        // patch 
         memset(h->delayed_pic, 0, sizeof(h->delayed_pic));
         // av_freep(&h->DPB);
     } else if (h->DPB) {
@@ -34,7 +41,7 @@ void dummy_cve_2015_3417_ff_h264_free_tables(H264Context *h, int free_rbsp) {
 
 int main() {
 	int free_rbsp = 1;    
-	H264Context *h; H264Picture *dpb; //H264Picture *d_p[18];
+	H264Context *h; H264Picture *dpb; 
     dpb = (H264Picture *)malloc(sizeof(H264Picture));
     dpb->needs_realloc = 1;
 

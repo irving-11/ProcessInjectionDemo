@@ -1,3 +1,9 @@
+/*
+note: "out-of-bounds write caused by a heap-based buffer overflow." BY changing conditions.
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE_2017_7862
+commit link: https://github.com/FFmpeg/FFmpeg/commit/8c2ea3030af7b40a3c4275696fb5c76cdb80950a
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,6 +27,7 @@ int dummy_cve_2017_7862_decode_frame(AVCodecContext *avctx, void *data, int *got
     PicContext *s = avctx->priv_data;
 
     if (s->width != avctx->width && s->height != avctx->height)
+    // patch
     //if (s->width != avctx->width || s->height != avctx->height) 
         ret = -1;
     
@@ -34,6 +41,10 @@ int main(){
 
     pictx = (PicContext *)malloc(sizeof(PicContext));
     pictx->height = 1; pictx->width = 2;
+    // OR
+    // pictx->height = 2; pictx->width = 1;
+    // OR
+    // pictx->height = 1; pictx->width = 1;
     avctx->priv_data = (void *)pictx;
 
     ret = dummy_cve_2017_7862_decode_frame(avctx, (void *)0, (int *)0, (AVPacket *)0);
@@ -44,3 +55,4 @@ int main(){
 
     return 0;
 }
+

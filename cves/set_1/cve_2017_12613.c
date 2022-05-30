@@ -1,3 +1,9 @@
+/*
+note: "out of bounds memory may be accessed in converting this value to an apr_time_exp_t value."
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE_2017_12613
+commit link: https://github.com/apache/apr/commit/da388844b8c48acc5f6e80f2689de6887b03745b
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,12 +32,12 @@ typedef struct apr_time_exp_t {
     int tm_gmtoff;
 } apr_time_exp_t;
 
-int dummy_cve_2017_12763_apr_time_exp_get(long *t, apr_time_exp_t *xt) {
+int dummy_cve_2017_12613_apr_time_exp_get(long *t, apr_time_exp_t *xt) {
     long year = xt->tm_year;
     long days;
     static const int dayoffset[12] =
     {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
-    // patch here
+    // patch
     // if (xt->tm_mon < 0 || xt->tm_mon >= 12)
         // return 20004;
     if (xt->tm_mon < 2)
@@ -55,6 +61,10 @@ int main() {
 	long *t; apr_time_exp_t *xt; int result;
 	xt = (apr_time_exp_t *)malloc(sizeof(apr_time_exp_t));
     xt->tm_mon = -1;
+    // OR
+    // xt->tm_mon = 1;
+    // OR
+    // xt->tm_mon = 13;
 
     result = dummy_cve_2017_12763_apr_time_exp_get(t, xt);
     if (result == 20004) {

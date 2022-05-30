@@ -1,3 +1,9 @@
+/*
+note: "allows attackers to cause a denial of service (application crash caused by a divide-by-zero error) with a user crafted audio file when converting to the MOV audio format."
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE_2018_14395
+commit link: https://github.com/FFmpeg/FFmpeg/commit/2c0e98a0b478284bdff6d7a4062522605a8beae5
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,7 +27,9 @@ int dummy_cve_2018_14395_mov_write_audio_tag(void *s, void *pb, void *mov, MOVTr
     unsigned int tag = track->tag;
     int version = 0;
     if (track->mode == MODE_MOV) {
-        if (track->timescale > 0x7fff || !track->par->channels) {
+    	if (track->timescale > 0x7fff) {
+    	// patch
+        // if (track->timescale > 0x7fff || !track->par->channels) {
             // if (mov_get_lpcm_flags(track->par->codec_id))
             //     tag = AV_RL32("lpcm");
             tag = 11;
@@ -41,8 +49,9 @@ int main() {
     AVCodecParameters *par;
     par = (AVCodecParameters *)malloc(sizeof(AVCodecParameters));
     par->channels = 0;
+    // OR
+    // par->channels = 1;
     track->par = par;
-    //track->par->channels = 0;
 
     ret = dummy_cve_2018_14395_mov_write_audio_tag((void *)0, (void *)0, (void *)0, track);
     if (track->tag == 11) {

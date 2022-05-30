@@ -1,3 +1,9 @@
+/*
+note: "Fix to prevent use of DH client certificates without sending certificate verify message." BY adding conditions.
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-0205
+commit link: https://github.com/openssl/openssl/commit/1421e0c584ae9120ca1b88098f13d6d2e90b83a3
+*/
+
 #include <stdio.h>
 
 #define EVP_PKT_SIGN    0x0010

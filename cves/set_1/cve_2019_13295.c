@@ -1,3 +1,9 @@
+/*
+note: "a heap-based buffer over-read, because a width of zero is mishandled."
+cve link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE_2019_13295
+commit link: https://github.com/ImageMagick/ImageMagick/commit/a7759f410b773a1dd57b0e1fb28112e1cd8b97bc
+*/
+
 #include <stdio.h>
 #include <stdint.h>
 
@@ -10,8 +16,9 @@ uint8_t *dummy_cve_2019_13295_AdaptiveThresholdImage(uint8_t *image, const size_
 
     if (threshold_image == (uint8_t *)NULL)
         return ((uint8_t *)NULL);
-    //if (width == 0)
-        //return threshold_image;
+    // patch
+    // if (width == 0)
+        // return threshold_image;
     threshold_image = &value_2;
     return threshold_image;
     // 通过指针指向的值来区分threshold_image
@@ -20,7 +27,8 @@ uint8_t *dummy_cve_2019_13295_AdaptiveThresholdImage(uint8_t *image, const size_
 int main() {
 	uint8_t *ptr;
 	ptr = dummy_cve_2019_13295_AdaptiveThresholdImage((void *)0, 0, 0, 0, (void *)0);
-	//printf("%d\n", *ptr);
+	// ptr = dummy_cve_2019_13295_AdaptiveThresholdImage((void *)0, 1, 0, 0, (void *)0);
+	
 	if (*ptr == 11) {
 		printf("after patch\n");}
 	else if (*ptr == 22){
