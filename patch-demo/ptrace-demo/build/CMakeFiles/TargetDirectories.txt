@@ -1,0 +1,4 @@
+/mnt/f/Dev/LinuxPatch/ProcessInjectionDemo/patch-demo/ptrace-demo/build/CMakeFiles/edit_cache.dir
+/mnt/f/Dev/LinuxPatch/ProcessInjectionDemo/patch-demo/ptrace-demo/build/CMakeFiles/rebuild_cache.dir
+/mnt/f/Dev/LinuxPatch/ProcessInjectionDemo/patch-demo/ptrace-demo/build/CMakeFiles/ptrace-exe.dir
+/mnt/f/Dev/LinuxPatch/ProcessInjectionDemo/patch-demo/ptrace-demo/build/CMakeFiles/vul-exe.dir

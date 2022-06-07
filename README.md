@@ -1,8 +1,10 @@
 # ProcessInjectionDemo
 
+### 需要解决的问题  
+1. 理解可变参数传参，如何将C函数传入到ebpf调用  
+2. 稳定的Hook机制，回到原函数，undo hook  
 
-
-任务（updated by 2-19）： 
+### 任务（updated by 2-19）： 
 
 1. 开始总结不同Patch机制（文档可写在Github），实现每一种机制的Demo进行性能对比。 TODO: 进一步细化任务。
    - 需要考虑哪几种机制，每一种原理写成文档

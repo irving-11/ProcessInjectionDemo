@@ -17,7 +17,7 @@ int fix_func(int v) {
 
 int main() {
 	while(1) {
-		printf("ptrace demo! [pid:%d]\n", getpid());
+		printf("ptrace demo! pid: %d\n", getpid());
 		printf("vulnerable_func(3000): %d    fix_func(3000): %d\n", vulnerable_func(3000),fix_func(3000));
         sleep(2);
     }

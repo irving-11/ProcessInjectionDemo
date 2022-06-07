@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
 	//构造jmp指令
     unsigned char jmp[] = {0xe9, 0x00, 0x00, 0x00, 0x00};
     uint64_t offset = addr2 - (addr1 + 5);
-    char tmp[8];
+    char tmp[8] = {0};
     sprintf(tmp, "%x", (unsigned char)(offset & 0xff));
     jmp[1] = (unsigned char)strtoul(tmp,NULL, 16);
     sprintf(tmp, "%x", (unsigned char)((offset & 0xff00)>>8));
@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
     //printf("%016lx\n", strtoul(startAddr, NULL, 16));	
     //计算指令写入位置
     offset = addr1 + (uint64_t)strtoul(startAddr, NULL, 16);
+    printf("jmp: 0x%08x 0x%08x\n", *(int *) jmp, (int) jmp[4]);
 
     //ptrace(PTRACE_POKEDATA, pid, (long)offset, jmp);
     putdata(pid, offset, jmp, 8);
