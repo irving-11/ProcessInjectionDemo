@@ -19,6 +19,19 @@ void patch_handler();
 
 #define offsetof(type, member) ((size_t) &((type *)0)->member)
 
+static __inline__ uint64_t rdtsc(void)
+{
+	unsigned hi, lo;
+	__asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+	return ((uint64_t)lo) | ((uint64_t)hi << 32);
+}
+
+static inline uint32_t tick_to_us(uint64_t tick) {
+	#define CYCLES_PER_MSEC(t)	((t) * 1e6)
+	double CPU_GHZ = 2.2;
+	return (tick * 1000) / CYCLES_PER_MSEC(CPU_GHZ);
+}
+
 // 48 b8 ff ff ff ff ff ff ff ff    movabs $0xffffffffffffffff,%rax
 // ff e0                            jmpq   *%rax
 void DSU(void *old, void *new) {
@@ -81,12 +94,14 @@ int func_to_patch(int a1, int *a2, struct ptr *p3, int a4, int *a5, struct ptr *
 
 
 static void basic_test() {
+	uint64_t t1 = rdtsc();
 	old_func();
 	DSU(old_func, new_func);
 	old_func();
+	uint64_t t2 = rdtsc() - t1;
 	
 	printf("stack_frame size:%d off1:%d off2:%d\n", sizeof(stack_frame), offsetof(stack_frame, a1), offsetof(stack_frame, a2));
-
+	printf("using time:%lu %dus\n", t2, tick_to_us(t2));
 	// patch_handler();
 }
 
@@ -97,10 +112,13 @@ void patch_test() {
 
 	int ret1 = func_to_patch(a1, &a2, &p3, a4, &a5, &p6);
 	printf("before patch ret:%d\n", ret1);
+	uint64_t t1 = rdtsc();
 	DSU(func_to_patch, patch_handler);
+	uint64_t t2 = rdtsc() - t1;
 	int ret2 = func_to_patch(a1, &a2, &p3, a4, &a5, &p6);
 	printf("after patch ret:%d\n", ret2);
 	assert(ret1 == ret2);
+	printf("DSU finished in tick:%lu time:%dus\n", t2, tick_to_us(t2));
 }
 
 int main() {
@@ -123,7 +141,15 @@ arg1-arg6: rdi, rsi, rdx, rcx, r8, r9
 
 2. callee saved registers：避免被后面的函数修改状态
 callee saved: rbx, rbp, r12, r13, r14, r15
-
+"sub $0x30,%rsp \n\t"
+"mov %rsp,%rbp \n\t"
+"mov %rbx, 0x00(%rbp) \n\t"
+"mov %r12, 0x08(%rbp) \n\t"
+"mov %r13, 0x10(%rbp) \n\t"
+"mov %r14, 0x18(%rbp) \n\t"
+"mov %r15, 0x20(%rbp) \n\t"
+"mov %rbp, 0x28(%rbp) \n\t"
+实际上这里不需要保存这些寄存器，因为patch_handler
 */
 __attribute__((naked))
 void patch_handler() {
@@ -140,32 +166,21 @@ void patch_handler() {
 		"mov %r8,0x20(%rbp) \n\t"
 		"mov %r9,0x28(%rbp) \n\t"
 
-		// save context
-		"sub $0x30,%rsp \n\t"
-		"mov %rsp,%rbp \n\t"
-		"mov %rbx, 0x00(%rbp) \n\t"
-		"mov %r12, 0x08(%rbp) \n\t"
-		"mov %r13, 0x10(%rbp) \n\t"
-		"mov %r14, 0x18(%rbp) \n\t"
-		"mov %r15, 0x20(%rbp) \n\t"
-		"mov %rbp, 0x28(%rbp) \n\t"
 
 		// patch_dispatcher(stack_pointer)
 		"mov %rbp, %rdi \n\t" // arg1 = sp
-		"add $0x30,%rdi \n\t" // arg1 = sp + 0x48
 		"callq patch_dispatcher \n\t"
 
-		// restore context
-		"mov 0x00(%rbp), %rbx \n\t"
-		"mov 0x08(%rbp), %r12 \n\t"
-		"mov 0x10(%rbp), %r13 \n\t"
-		"mov 0x18(%rbp), %r14 \n\t"
-		"mov 0x20(%rbp), %r15 \n\t"
-		"mov 0x28(%rbp), %rbp \n\t"
+		// // restore context
+		// "mov 0x00(%rbp), %rbx \n\t"
+		// "mov 0x08(%rbp), %r12 \n\t"
+		// "mov 0x10(%rbp), %r13 \n\t"
+		// "mov 0x18(%rbp), %r14 \n\t"
+		// "mov 0x20(%rbp), %r15 \n\t"
+		// "mov 0x28(%rbp), %rbp \n\t"
 
 		"mov %rbp, %rsp \n\t"
 		"add $0x30,%rsp \n\t" // 16 byte aligned
-		"add $0x30,%rsp \n\t"
 		"pop %rbp \n\t"
 		"retq \n\t");
 }

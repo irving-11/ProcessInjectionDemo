@@ -1,7 +1,7 @@
 
 TARGET = test1 patch_poc
 
-CFLAGS = -O0 
+CFLAGS = -O0 -g
 
 all: $(TARGET)
 

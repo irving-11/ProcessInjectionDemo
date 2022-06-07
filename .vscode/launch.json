@@ -10,7 +10,7 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/patch-demo/variable_args/patch_poc",
 			"args": [],
-			"stopAtEntry": false,
+			"stopAtEntry": true,
 			"cwd": "${fileDirname}",
 			"environment": [],
 			"externalConsole": false,
