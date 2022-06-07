@@ -149,7 +149,7 @@ callee saved: rbx, rbp, r12, r13, r14, r15
 "mov %r14, 0x18(%rbp) \n\t"
 "mov %r15, 0x20(%rbp) \n\t"
 "mov %rbp, 0x28(%rbp) \n\t"
-实际上这里不需要保存这些寄存器，因为patch_handler
+实际上这里不需要保存这些寄存器，因为patch_handler没有修改这些寄存器
 */
 __attribute__((naked))
 void patch_handler() {
