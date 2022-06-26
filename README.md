@@ -1,5 +1,12 @@
 # ProcessInjectionDemo
 
+BTFParse目录：生成、解析BTF信息等，脚本do.sh使用方法：**sh do.sh elf_file_path(need debuginfo)**
+
+cves目录：其中set_1_with_ubpf目录是集成ubpf到patch后的一些cve
+
+patch-demo/ubpf/vm目录：patch机制demo，simple-test.c集成ubpf。my_test.ebpf.c为补丁。ptrace-hook.c为hook源文件。
+
+
 ### 需要解决的问题  
 1. 理解可变参数传参，如何将C函数传入到ebpf调用  
 2. 稳定的Hook机制，回到原函数，undo hook  

@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
     
     //获取相关函数地址
     uint64_t addr1 = findFuncAddress(pbuff, "vul_func");
-    uint64_t addr2 = findFuncAddress(pbuff, "fix_func");
+    uint64_t addr2 = findFuncAddress(pbuff, "patch_handler");
 	
 	//构造jmp指令
     unsigned char jmp[] = {0xe9, 0x00, 0x00, 0x00, 0x00};

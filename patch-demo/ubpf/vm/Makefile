@@ -33,7 +33,7 @@ ifeq ($(DEBUG),1)
 CFLAGS += -DDEBUG
 endif
 
-all: libubpf.a libubpf.so test
+all: libubpf.a libubpf.so test simple-test ptrace-hook
 
 ubpf_jit_x86_64.o: ubpf_jit_x86_64.c ubpf_jit_x86_64.h
 
@@ -45,6 +45,11 @@ libubpf.so: ubpf_vm.o ubpf_jit_x86_64.o ubpf_loader.o
 
 test: test.o libubpf.a
 
+simple-test: simple-test.o libubpf.a
+
+ptrace-hook: 
+	$(CC) ptrace-hook.c -o ptrace-hook
+
 install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib
 	$(INSTALL) -m 644 libubpf.a $(DESTDIR)$(PREFIX)/lib
@@ -53,4 +58,4 @@ install:
 	$(INSTALL) -m 644 inc/ubpf.h $(DESTDIR)$(PREFIX)/include
 
 clean:
-	rm -f test libubpf.a libubpf.so *.o
+	rm -f test simple-test ptrace-hook libubpf.a libubpf.so *.o

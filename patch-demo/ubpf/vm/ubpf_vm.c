@@ -69,7 +69,7 @@ ubpf_create(void)
         return NULL;
     }
 
-    vm->bounds_check_enabled = true;
+    vm->bounds_check_enabled = false;
     vm->error_printf = fprintf;
 
 #if __x86_64__
