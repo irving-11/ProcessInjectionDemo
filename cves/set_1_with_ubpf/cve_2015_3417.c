@@ -203,7 +203,7 @@ int main() {
 	H264Context *h; H264Picture *dpb; 
     dpb = (H264Picture *)malloc(sizeof(H264Picture));
     dpb->needs_realloc = 1;
-
+    
 	h = (H264Context *)malloc(sizeof(H264Context));
     h->DPB = dpb;
     h->delayed_pic[0] = dpb;
@@ -213,6 +213,6 @@ int main() {
 		printf("after patch\n");}
 	else if (h->delayed_pic[0]->needs_realloc == 1){
 		printf("before patch\n");}
-
+		
     return 0;
 }*/
