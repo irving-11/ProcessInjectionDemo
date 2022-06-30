@@ -50,8 +50,20 @@ int run_ebpf(stack_frame *frame)
     vm->num_insts = sizeof(bytecode)/sizeof(vm->insts[0]);
 
     uint64_t ret;
-    if (ubpf_exec(vm, frame, sizeof(*frame), &ret) < 0)
-        ret = UINT64_MAX;
+    // jit
+    ubpf_jit_fn fn = ubpf_compile(vm, &errmsg);
+    if(fn == NULL){
+    	fprintf(stderr, "Failed to compile: %s\n", errmsg);
+    	free(errmsg);
+    	ret = UINT64_MAX;
+    	return ret;
+    }
+    ret = fn(frame, sizeof(*frame));
+    
+    // no jit
+    //if (ubpf_exec(vm, frame, sizeof(*frame), &ret) < 0)
+        //ret = UINT64_MAX;
+
 
     ubpf_destroy(vm);
 	return ret;
