@@ -50,6 +50,7 @@ int run_ebpf(stack_frame *frame)
     vm->num_insts = sizeof(bytecode)/sizeof(vm->insts[0]);
 
     uint64_t ret;
+    char *errmsg;
     // jit
     ubpf_jit_fn fn = ubpf_compile(vm, &errmsg);
     if(fn == NULL){
