@@ -1,7 +1,7 @@
 # encoding: utf8
 import os
 import sys
-sys.path.append('/home/ubuntu/Documents/ubpf')
+sys.path.append('/home/ubuntu/Music/ProcessInjectionDemo/patch-demo/ubpf')
 from elftools.elf.elffile import ELFFile
 import argparse
 import subprocess

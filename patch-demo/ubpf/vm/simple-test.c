@@ -20,11 +20,12 @@ typedef struct stack_frame {
 
 int patch_dispatcher(stack_frame *frame);
 void patch_handler();
+static void register_functions(struct ubpf_vm *vm);
 
 static int8_t bytecode[] = ""
-"\x61\x11\x00\x00\x00\x00\x00\x00\x67\x01\x00\x00\x20\x00\x00\x00\xc7\x01\x00\x00\x20\x00\x00\x00\xb7"
-"\x00\x00\x00\x01\x00\x00\x00\x65\x01\x01\x00\x88\x13\x00\x00\xb7\x00\x00\x00\x00\x00\x00\x00\x95\x00"
-"\x00\x00\x00\x00\x00\x00"
+"\xb7\x00\x00\x00\x01\x00\x00\x00\x61\x11\x00\x00\x00\x00\x00\x00\x67\x01\x00\x00\x20\x00\x00\x00\xc7"
+"\x01\x00\x00\x20\x00\x00\x00\x65\x01\x02\x00\x88\x13\x00\x00\xb7\x01\x00\x00\x64\x00\x00\x00\x85\x00"
+"\x00\x00\x01\x00\x00\x00\x95\x00\x00\x00\x00\x00\x00\x00"
 "";
 
 int vul_func(int v) {
@@ -41,6 +42,8 @@ int run_ebpf(stack_frame *frame)
         fprintf(stderr, "Failed to create VM\n");
         return 1;
     }
+
+	register_functions(vm);	
 
     vm->insts = malloc(sizeof(bytecode));
     if (vm->insts == NULL) {
@@ -64,7 +67,6 @@ int run_ebpf(stack_frame *frame)
     // no jit
     //if (ubpf_exec(vm, frame, sizeof(*frame), &ret) < 0)
         //ret = UINT64_MAX;
-
 
     ubpf_destroy(vm);
 	return ret;
@@ -115,7 +117,7 @@ int main() {
 		printf("Demo! [pid:%d]\n", getpid());
 		
         result = vul_func(3000);
-		if(result == 0){
+		if(result == 10){
 			printf("This is New Function\n");
 		}else if (result == 1){
 			printf("This is Old Function\n");
@@ -126,3 +128,25 @@ int main() {
 	}
     return 0;
 }
+
+static uint32_t
+new_sqrt(uint32_t x)
+{
+    return sqrt(x);
+}
+
+static uint64_t
+unwind(uint64_t i)
+{
+    return i;
+}
+
+static void
+register_functions(struct ubpf_vm *vm)
+{
+    ubpf_register(vm, 1, "new_sqrt", new_sqrt);
+    ubpf_register(vm, 2, "strcmp_ext", strcmp);
+    ubpf_register(vm, 3, "unwind", unwind);
+    //ubpf_set_unwind_function_index(vm, 5);
+}
+

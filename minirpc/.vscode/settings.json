@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "ubpf_int.h": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
+    }
+}
